@@ -1,6 +1,5 @@
 *.log
 code/wandb/*
-data/train.csv
-data/test.csv
-data/sample_submission.csv
 code/.DS_Store
+data/*.csv
+code/*.csv
