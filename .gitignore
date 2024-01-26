@@ -3,3 +3,5 @@ code/wandb/*
 code/.DS_Store
 data/*.csv
 code/*.csv
+output/*
+code/__pycache__/*
