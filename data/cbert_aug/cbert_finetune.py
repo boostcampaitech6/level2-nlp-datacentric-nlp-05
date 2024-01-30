@@ -14,7 +14,7 @@ import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 
-from transformers import BertTokenizer, BertModel, BertForMaskedLM, AdamW, WarmupLinearSchedule
+from transformers import AutoTokenizer, AutoModel, AutoModelForMaskedLM, AdamW
 #import train_text_classifier_new
 
 import cbert_utils
@@ -39,9 +39,9 @@ def main():
                         help="The output dir for augmented dataset.")
     parser.add_argument("--save_model_dir", default="cbert_model", type=str,
                         help="The cache dir for saved model.")
-    parser.add_argument("--bert_model", default="bert-base-uncased", type=str,
+    parser.add_argument("--bert_model", default="klue/roberta-large", type=str,
                         help="The path of pretrained bert model.")
-    parser.add_argument("--task_name", default="subj", type=str,
+    parser.add_argument("--task_name", default="KLUE-TC", type=str,
                         help="The name of the task to train.")
     parser.add_argument("--max_seq_length", default=64, type=int,
                         help="The maximum total input sequence length after WordPiece tokenization. \n"
@@ -75,6 +75,7 @@ def main():
         "mpqa": AugProcessor,
         "rt-polarity": AugProcessor,
         "subj": AugProcessor,
+        "KLUE-TC": AugProcessor,
     }
 
     task_name = args.task_name
@@ -89,17 +90,20 @@ def main():
     torch.manual_seed(args.seed)
 
     ## leveraging lastest bert module in Transformers to load pre-trained model tokenizer
-    tokenizer = BertTokenizer.from_pretrained(args.bert_model)
+    tokenizer = AutoTokenizer.from_pretrained(args.bert_model)
     
     ## leveraging lastest bert module in Transformers to load pre-trained model (weights)
-    model = BertForMaskedLM.from_pretrained(args.bert_model)
+    model = AutoModelForMaskedLM.from_pretrained(args.bert_model)
 
     if task_name == 'stsa.fine':
-        model.bert.embeddings.token_type_embeddings = torch.nn.Embedding(5, 768)
+        model.bert.embeddings.token_type_embeddings = torch.nn.Embedding(5, 1024)
         model.bert.embeddings.token_type_embeddings.weight.data.normal_(mean=0.0, std=0.02)
     elif task_name == 'TREC':
-        model.bert.embeddings.token_type_embeddings = torch.nn.Embedding(6, 768)
+        model.bert.embeddings.token_type_embeddings = torch.nn.Embedding(6, 1024)
         model.bert.embeddings.token_type_embeddings.weight.data.normal_(mean=0.0, std=0.02)
+    elif task_name == 'KLUE-TC':
+        model.roberta.embeddings.token_type_embeddings = torch.nn.Embedding(7, 1024)
+        model.roberta.embeddings.token_type_embeddings.weight.data.normal_(mean=0.0, std=0.02)
 
     args.data_dir = os.path.join(args.data_dir, task_name)
     args.output_dir = os.path.join(args.output_dir, task_name)
@@ -142,7 +146,7 @@ def main():
             """train generator at each batch"""
             optimizer.zero_grad() 
             outputs = model(input_ids, input_mask, segment_ids,
-                    masked_lm_labels=masked_ids)
+                    labels=masked_ids)
             loss = outputs[0]
             loss.backward()
             avg_loss += loss.item()

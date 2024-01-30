@@ -82,6 +82,8 @@ class AugProcessor(DataProcessor):
             return ["0", "1", "2", "3", "4"]
         elif name in ['TREC']:
             return ["0", "1", "2", "3", "4", "5"]
+        elif name in ['KLUE-TC']:
+            return ["0", "1", "2", "3", "4", "5", "6"]
     
     def _create_examples(self, lines, set_type):
         """Create examples for the training and dev sets."""
@@ -108,7 +110,7 @@ def convert_examples_to_features(examples, label_list, max_seq_length, tokenizer
         # The convention in BERT is:
         # tokens:   [CLS] is this jack ##son ##ville ? [SEP]
         # type_ids: 0     0  0    0    0     0       0 0    
-        tokens_a = tokenizer._tokenize(example.text_a)
+        tokens_a = tokenizer.tokenize(example.text_a)
         tokens_label = label_map[example.label]
         tokens, init_ids, input_ids, input_mask, segment_ids, masked_lm_labels = \
             extract_features(tokens_a, tokens_label, max_seq_length, tokenizer)
@@ -197,7 +199,7 @@ def extract_features(tokens_a, tokens_label, max_seq_length, tokenizer):
     masked_lm_probs = 0.15
     max_predictions_per_seq = 20
     rng = random.Random(12345)
-    original_masked_lm_labels = [-1] * max_seq_length
+    original_masked_lm_labels = [-100] * max_seq_length
     (output_tokens, masked_lm_positions, 
     masked_lm_labels) = create_masked_lm_predictions(
             tokens, masked_lm_probs, original_masked_lm_labels, max_predictions_per_seq, rng, tokenizer)
@@ -209,8 +211,8 @@ def extract_features(tokens_a, tokens_label, max_seq_length, tokenizer):
     
     # Zero-pad up to the sequence length.
     while len(input_ids) < max_seq_length:
-        init_ids.append(0)
-        input_ids.append(0)
+        init_ids.append(1)
+        input_ids.append(1)
         input_mask.append(0)
         segment_ids.append(0)
     
@@ -225,7 +227,7 @@ def convert_tokens_to_ids(tokens, tokenizer):
     """Converts tokens into ids using the vocab."""
     ids = []
     for token in tokens:
-        token_id = tokenizer._convert_token_to_id(token)
+        token_id = tokenizer.convert_tokens_to_ids(token)
         ids.append(token_id)
     return ids
 
