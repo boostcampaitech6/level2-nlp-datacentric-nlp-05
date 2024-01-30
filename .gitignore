@@ -1,4 +1,9 @@
 *.log
+*.pyc
+*.bin
+*.pt
+*.pth
+*.tsv
 code/wandb/*
 data/train.csv
 data/test.csv
