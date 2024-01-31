@@ -11,6 +11,7 @@ import random
 from tqdm import tqdm, trange
 import json
 
+import pandas as pd
 import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler
@@ -155,6 +156,7 @@ def main():
         shutil.copy(origin_train_path, save_train_path)
         save_train_file = open(save_train_path, 'a')
         tsv_writer = csv.writer(save_train_file, delimiter='\t')
+        new_strs = []
         for _, batch in enumerate(train_dataloader):
             model.eval()
             batch = tuple(t.cuda() for t in batch)
@@ -174,8 +176,11 @@ def main():
                     new_str = convert_ids_to_str(ids.cpu().numpy(), tokenizer)
                     if '[UNK]' in new_str:
                         continue
+                    elif new_str in new_strs:
+                        continue
                     else:
                         tsv_writer.writerow([new_str, seg[0].item()])
+                    new_strs.append(new_str)
             torch.cuda.empty_cache()
         predictions = predictions.detach().cpu()
         model.cpu()
@@ -184,6 +189,10 @@ def main():
         shutil.copy(save_train_path, bak_train_path)
         # best_test_acc = train_text_classifier.train("aug_data_{}_{}_{}_{}".format(args.sample_num, args.sample_ratio, args.gpu, args.temp))
         # print("epoch {} augment best acc:{}".format(e, best_test_acc))
-
+    
+    train = pd.read_csv(save_train_path, sep='\t')
+    train.columns = ['text', 'target']
+    train.to_csv('../train_final.csv', index=False)
+    
 if __name__ == "__main__":
     main()
