@@ -1,7 +1,7 @@
-import pandas as pd
-import re
-
 from koeda import RD, RI, SR, RS 
+from hanspell import spell_checker
+from tqdm import tqdm
+import re
 
 def data_preprocess(data):
     """
@@ -14,8 +14,9 @@ def data_preprocess(data):
         DataFrame: 데이터 전처리를 수행하고 나서 DataFrame을 반환합니다.
     """
     
-    for idx, text in enumerate(data["text"]):
-        preprocessed_data = re.sub('[^A-Za-zㄱ-힣0-9\s]', ' ', str(text))    # 특수문자 제거
+    for idx, text in enumerate(tqdm(data["text"], desc="data preprocessing")):
+        # spelled_data = spell_checker.check(text)                                        # 맞춤법 검사
+        preprocessed_data = re.sub('[^A-Za-zㄱ-힣0-9\s]', ' ', text)                      # 특수문자 처리
         data.iloc[idx, 1] = preprocessed_data
         
         
@@ -38,18 +39,9 @@ def data_augmentation(data):
     random_swap = RS()      # 랜덤으로 2개의 단어를 선택해 위치를 바꿈
     synonym_replace = SR()  # stop words가 아닌 단어들 중에서 랜덤으로 선택해 유의어로 교체
     
-    for idx, text in enumerate(data["text"]):
-        length = len(data)
-        
-        augmented_data1 = random_delete(text, p=0.1)
-        augmented_data2 = random_insert(text, p=0.1)
-        augmented_data3 = random_swap(text, p=0.1)
-        augmented_data4 = synonym_replace(text, p=0.1)
-        
-        data.loc[length] = [data.iloc[idx, 0], augmented_data1, data.iloc[idx, 2], data.iloc[idx, 3], data.iloc[idx, 4]]
-        data.loc[length+1] = [data.iloc[idx, 0], augmented_data2, data.iloc[idx, 2], data.iloc[idx, 3], data.iloc[idx, 4]]
-        data.loc[length+2] = [data.iloc[idx, 0], augmented_data3, data.iloc[idx, 2], data.iloc[idx, 3], data.iloc[idx, 4]]
-        data.loc[length+3] = [data.iloc[idx, 0], augmented_data4, data.iloc[idx, 2], data.iloc[idx, 3], data.iloc[idx, 4]]
-    
+    for idx, text in enumerate(tqdm(data["text"], desc="data augmentation")):
+        augmented_data = random_delete(text, p=0.2)
+        data.loc[len(data)] = [data.iloc[idx, 0], augmented_data, data.iloc[idx, 2], data.iloc[idx, 3], data.iloc[idx, 4], data.iloc[idx, 5]]
+
     
     return data
