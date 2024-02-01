@@ -71,7 +71,7 @@ def crawl(company_code:str, start:int, end:int, target:str):
             print(id)
             
             # 기사가 2021년 이후의 기사에, 원하는 섹션인 경우에만 포함
-            if year > 2020 and label == target and curr_idx < 20000:
+            if year > 2020 and label == target and curr_idx < 10000:
                     data['ID'].append(id)
                     data['text'].append(title)
                     data['target'].append( section_to_label[label] )
@@ -81,7 +81,7 @@ def crawl(company_code:str, start:int, end:int, target:str):
             
             
             # 20000개 채우면 실행시간 문제로 인해 가차없이 강제종료                
-            if curr_idx == 20000:
+            if curr_idx == 10000:
                 break
                 
         except RequestException as e:
@@ -108,7 +108,7 @@ def crawl_sport(company_code:str, start:int, end:int):
             'url':[], # URL of article
             'date':[]} # written date of article
     
-    for article_code in range(start, end+1):
+    for article_code in range(start, end+1, 5):
         article_code = str(article_code)
         article_code = '0'*(10-len(article_code)) + article_code
         
@@ -145,9 +145,10 @@ def crawl_sport(company_code:str, start:int, end:int):
             print(title)
             print(date)
             print(year)
+            print(id)
             
             # 기사가 2021년 이후의 기사인 경우에만 포함
-            if year > 2020 and curr_idx < 100000:
+            if year > 2020 and curr_idx < 10000:
                     data['ID'].append(id)
                     data['text'].append(title)
                     data['target'].append(5)
@@ -157,7 +158,7 @@ def crawl_sport(company_code:str, start:int, end:int):
             
             
             # 100000개 채우면 실행시간 문제로 인해 가차없이 강제종료                
-            if curr_idx == 100000:
+            if curr_idx == 10000:
                 break
                 
         except RequestException as e:
@@ -165,35 +166,37 @@ def crawl_sport(company_code:str, start:int, end:int):
             
     df = pd.DataFrame(data)
     df.to_csv(file_name, index=False)
-    
+ 
 """
 [아래 6개의 URL구조]
 f'https://n.news.naver.com/mnews/article/{company_code}/{article_code}?sid=100'
 """
-# 정치 섹션에서 크롤링 가능한 조선일보(023)의 기사를 20000개 크롤링 함    
+# 정치 섹션에서 크롤링 가능한 조선일보(023)의 기사를 10000개 크롤링 함    
 # crawl('023', 3600000, 3800000, '정치') #[재혁]이 이거 풀고 하면 됨  
 
-# # 경제 섹션에서 크롤링 가능한 한국경제TV(215)의 기사를 20000개 크롤링 함
+# # 경제 섹션에서 크롤링 가능한 한국경제TV(215)의 기사를 10000개 크롤링 함
 # crawl('215', 930000, 1145331, '경제') #[상기형]이 이거 주석 풀고 하면 됨
 
-# # 사회 섹션에서 크롤링 가능한 국민일보(005)의 기사를 20000개 크롤링함
+# # 사회 섹션에서 크롤링 가능한 국민일보(005)의 기사를 10000개 크롤링함
 # crawl('005', 1400000, 1669570, '사회') #[건우형]이 이거 주석 풀고 하면 됨
 
-# 생활/문화 섹션에서 크롤링 가능한 헬스조선(346)의 기사를 어느정도 크롤링 함(20000개가 어려울 수도 있을듯)
+# 생활/문화 섹션에서 크롤링 가능한 헬스조선(346)의 기사를 어느정도 크롤링 함(10000개가 어려울 수도 있을듯)
 # crawl('346', 36000, 69689, '생활') #[재혁]이 이거 풀고 하면 됨 완료
 
-# IT/과학 섹션에서 크롤링 가능한 지디넷코리아(092)의 기사를 어느정도 크롤링 함(20000개가 어려울 수도 있을듯)
+# IT/과학 섹션에서 크롤링 가능한 지디넷코리아(092)의 기사를 어느정도 크롤링 함(10000개가 어려울 수도 있을듯)
 # crawl('092', 2220000, 2319480, 'IT')  #[신근이형]이 이거 주석 풀고 하면 됨
 
-# 세계 섹션에서 크롤링 가능한 조선일보(023)의 기사를 20000개 크롤링 함
+# 세계 섹션에서 크롤링 가능한 조선일보(023)의 기사를 10000개 크롤링 함
 # crawl('023', 3600000, 3800000, '세계') #[재혁]이 이거 풀고 하면 됨
+
+
 
 """
 [아래 1개의 URL구조]
 f'https://sports.news.naver.com/news?oid={company_code}&aid={article_code}'
 """
-# 스포츠 섹션에서 크롤링 가능한 스포츠조선(076)의 기사를 20000개 크롤링함
-# crawl_sport('076', 4000000, 4110000)
+# 스포츠 섹션에서 크롤링 가능한 스포티비뉴스(477)의 기사를 10000개 크롤링함
+# crawl_sport('477', 321043, 461043)
 
 
-# 오후 2시 01분
+# 위에 사용된 모든 언론사는 'AI학습 이용금지'가 아님을 확인하고 사용함
