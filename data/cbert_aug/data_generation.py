@@ -1,8 +1,15 @@
 import os
 import pandas as pd
+import re
 from sklearn.model_selection import train_test_split
 
-df = pd.read_csv('../train_sampled.csv')
+df = pd.read_csv('../train.csv')
+
+texts = []
+for idx, row in df.iterrows():
+    text = re.sub('[^A-Za-zㄱ-힣0-9\s]', ' ', row['text'])
+    texts.append(text)
+df['text'] = texts
 
 os.makedirs('./datasets/KLUE-TC', exist_ok=True)
 os.makedirs('./aug_data/KLUE-TC', exist_ok=True)
