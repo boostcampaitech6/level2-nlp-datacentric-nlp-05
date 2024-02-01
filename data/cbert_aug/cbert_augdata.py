@@ -65,7 +65,7 @@ def main():
                         help="Total batch size for training.")
     parser.add_argument("--learning_rate", default=2e-5, type=float,
                         help="The initial learning rate for Adam.")
-    parser.add_argument("--num_train_epochs", default=10.0, type=float,
+    parser.add_argument("--num_train_epochs", default=9.0, type=float,
                         help="Total number of training epochs to perform.")
     parser.add_argument("--warmup_proportion", default=0.1, type=float,
                         help="Proportion of training to perform linear learning rate warmup for. "
@@ -156,7 +156,6 @@ def main():
         shutil.copy(origin_train_path, save_train_path)
         save_train_file = open(save_train_path, 'a')
         tsv_writer = csv.writer(save_train_file, delimiter='\t')
-        new_strs = []
         for _, batch in enumerate(train_dataloader):
             model.eval()
             batch = tuple(t.cuda() for t in batch)
@@ -176,11 +175,8 @@ def main():
                     new_str = convert_ids_to_str(ids.cpu().numpy(), tokenizer)
                     if '[UNK]' in new_str:
                         continue
-                    elif new_str in new_strs:
-                        continue
                     else:
                         tsv_writer.writerow([new_str, seg[0].item()])
-                    new_strs.append(new_str)
             torch.cuda.empty_cache()
         predictions = predictions.detach().cpu()
         model.cpu()
@@ -192,6 +188,7 @@ def main():
     
     train = pd.read_csv(save_train_path, sep='\t')
     train.columns = ['text', 'target']
+    train.drop_duplicates(subset=['text'], inplace=True)
     train.to_csv('../train_final.csv', index=False)
     
 if __name__ == "__main__":

@@ -196,8 +196,8 @@ def extract_features(tokens_a, tokens_label, max_seq_length, tokenizer):
 
     ## construct input_ids for each example, we replace the word_id using 
     ## the ids of masked words (mask words based on original sentence)
-    masked_lm_probs = 0.2
-    max_predictions_per_seq = 10
+    masked_lm_probs = 0.1
+    max_predictions_per_seq = 3
     rng = random.Random(12345)
     original_masked_lm_labels = [-100] * max_seq_length
     (output_tokens, masked_lm_positions, 
