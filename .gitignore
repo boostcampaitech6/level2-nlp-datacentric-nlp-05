@@ -1,7 +1,7 @@
 *.log
-code/wandb/*
-code/.DS_Store
+gunwoo/wandb/*
+gunwoo/.DS_Store
 data/*.csv
-code/*.csv
+gunwoo/*.csv
 output/*
-code/__pycache__/*
+gunwoo/__pycache__/*
