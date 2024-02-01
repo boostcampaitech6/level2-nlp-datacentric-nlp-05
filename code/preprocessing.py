@@ -1,5 +1,4 @@
 from koeda import RD, RI, SR, RS 
-from hanspell import spell_checker
 from tqdm import tqdm
 import re
 
@@ -15,7 +14,6 @@ def data_preprocess(data):
     """
     
     for idx, text in enumerate(tqdm(data["text"], desc="data preprocessing")):
-        # spelled_data = spell_checker.check(text)                                        # 맞춤법 검사
         preprocessed_data = re.sub('[^A-Za-zㄱ-힣0-9\s]', ' ', text)                      # 특수문자 처리
         data.iloc[idx, 1] = preprocessed_data
         
@@ -41,7 +39,7 @@ def data_augmentation(data):
     
     for idx, text in enumerate(tqdm(data["text"], desc="data augmentation")):
         augmented_data = random_delete(text, p=0.2)
-        data.loc[len(data)] = [data.iloc[idx, 0], augmented_data, data.iloc[idx, 2], data.iloc[idx, 3], data.iloc[idx, 4], data.iloc[idx, 5]]
+        data.loc[len(data)] = [data.iloc[idx, 0], augmented_data, data.iloc[idx, 2], data.iloc[idx, 3], data.iloc[idx, 4]]
 
     
     return data
