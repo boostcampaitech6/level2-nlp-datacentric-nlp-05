@@ -1,5 +1,11 @@
 *.log
+*.pyc
+*.bin
+*.pt
+*.pth
+*.tsv
 code/wandb/*
+code/.DS_Store
 data/train.csv
 data/test.csv
 data/sample_submission.csv
@@ -14,3 +20,4 @@ code/.DS_Store
 *wandb*
 *.pth
 .DS_Store
+data/cbert_aug/cbert_model/*
