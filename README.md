@@ -17,9 +17,9 @@ KLUE Topic classification의 공식 리더보드와 동일한 평가 방법인 M
 # 팀 역할 및 실험 내용
 | 이름 | 역할 및 실험 내용|
 | :--- | :--- |
-| 김기호 | •  <br/> •  <br/> •  <br/> •  &emsp; |
-| 박상기 | •  <br/> •  &emsp; |
-| 방신근 | •  <br/> •  <br/> •  <br/> •  &emsp; |
-| 심재혁 | •  <br/> •  <br/> •  &emsp; |
-| 황순열 | •  <br/> •  <br/> •  <br/> •  &emsp; |
-| 김건우 | •  <br/> •  <br/> •  <br/> •  <br/> •  &emsp; |
+| 김기호 | • EDA <br/> • Data Augmentation &emsp; |
+| 박상기 | • Spell check <br/> • Cleanlab <br/> • Back Translation <br/> • AEDA &emsp; |
+| 방신근 | • Paper research &emsp; |
+| 심재혁 | • Crawling <br/> • Back Translation <br/> • Customized Cleanlab &emsp; |
+| 황순열 | • EDA <br/> • post-analysis <br/> • Data Augmentation(Mixup) &emsp; |
+| 김건우 | • Data Augmentation(RS,SR,RD,RI) <br/> • Data Filtering(부산대 맞춤법검사기) <br/> • Data Cleaning &emsp; |
